@@ -129,6 +129,18 @@ export function createCatalogRepoOnboardAction(
             .describe('Component spec.owner, e.g. group:default/developers'),
         tags: z =>
           z.array(z.string()).optional().describe('Catalog entity tags'),
+        labels: z =>
+          z
+            .array(z.string())
+            .optional()
+            .describe('Labels to apply to the pull request, if one is opened'),
+        assignees: z =>
+          z
+            .array(z.string())
+            .optional()
+            .describe(
+              'GitHub usernames to assign to the pull request, if one is opened. Defaults to the task initiator when omitted.',
+            ),
       },
       output: {
         exists: z =>
@@ -158,7 +170,7 @@ export function createCatalogRepoOnboardAction(
         );
       }
 
-      const { name, title, description, type, lifecycle, owner, tags } =
+      const { name, title, description, type, lifecycle, owner, tags, labels, assignees } =
         ctx.input;
       const { owner: repoOwner, repo } = parseRepoUrl(ctx.input.repoUrl);
       const repoSlug = `${repoOwner}/${repo}`;
@@ -269,6 +281,7 @@ export function createCatalogRepoOnboardAction(
       );
 
       let prUrl: string;
+      let prNumber: number;
       try {
         const { data: pr } = await octokit.rest.pulls.create({
           owner: repoOwner,
@@ -279,6 +292,7 @@ export function createCatalogRepoOnboardAction(
           body: `Adds \`${CATALOG_INFO_PATH}\` so **${name}** can be registered in the catalog, via the "Onboard an existing repository" template.`,
         });
         prUrl = pr.html_url;
+        prNumber = pr.number;
       } catch (e) {
         if (isRequestError(e) && e.status === 422) {
           const { data: existingPrs } = await octokit.rest.pulls.list({
@@ -291,12 +305,56 @@ export function createCatalogRepoOnboardAction(
             throw e;
           }
           prUrl = existingPrs[0].html_url;
+          prNumber = existingPrs[0].number;
         } else if (isRequestError(e) && (e.status === 403 || e.status === 404)) {
           throw new InputError(
             `The GitHub integration credentials don't have access to '${repoSlug}' (HTTP ${e.status})`,
           );
         } else {
           throw e;
+        }
+      }
+
+      // Some repos gate PRs on having a label/assignee (e.g. a "Require
+      // Label and Assignee for PR" workflow) - apply what we can, but the PR
+      // is already open at this point, which is the valuable part, so a
+      // failure here (label doesn't exist, user isn't a collaborator) is
+      // only ever a warning, never a task failure.
+      if (labels?.length) {
+        try {
+          await octokit.rest.issues.addLabels({
+            owner: repoOwner,
+            repo,
+            issue_number: prNumber,
+            labels,
+          });
+        } catch (e) {
+          ctx.logger.warn(
+            `Could not apply labels [${labels.join(', ')}] to PR #${prNumber} in '${repoSlug}': ${
+              isRequestError(e) ? e.message : String(e)
+            }`,
+          );
+        }
+      }
+
+      const effectiveAssignees =
+        assignees?.length ? assignees : ctx.user?.entity?.metadata.name
+          ? [ctx.user.entity.metadata.name]
+          : [];
+      if (effectiveAssignees.length) {
+        try {
+          await octokit.rest.issues.addAssignees({
+            owner: repoOwner,
+            repo,
+            issue_number: prNumber,
+            assignees: effectiveAssignees,
+          });
+        } catch (e) {
+          ctx.logger.warn(
+            `Could not assign [${effectiveAssignees.join(', ')}] to PR #${prNumber} in '${repoSlug}': ${
+              isRequestError(e) ? e.message : String(e)
+            }`,
+          );
         }
       }
 

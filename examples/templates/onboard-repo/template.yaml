@@ -83,6 +83,28 @@ spec:
             type: string
           ui:field: EntityTagsPicker
 
+    - title: Review
+      properties:
+        labels:
+          title: Pull request labels
+          type: array
+          items:
+            type: string
+          description: >-
+            Labels to apply to the pull request. Some repos require at
+            least one label before merging (e.g. a "Require Label and
+            Assignee for PR" policy check) - check the target repo's
+            branch protection rules if you're not sure.
+        assignees:
+          title: Pull request assignees
+          type: array
+          items:
+            type: string
+          description: >-
+            GitHub usernames to assign to the pull request. Some repos
+            require at least one assignee before merging. Defaults to you
+            if left blank.
+
   steps:
     - id: onboard
       name: Onboard repository
@@ -96,6 +118,8 @@ spec:
         lifecycle: ${{ parameters.lifecycle }}
         owner: ${{ parameters.owner }}
         tags: ${{ parameters.tags }}
+        labels: ${{ parameters.labels }}
+        assignees: ${{ parameters.assignees }}
 
     - id: register
       name: Register in the catalog

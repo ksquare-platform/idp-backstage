@@ -1,10 +1,8 @@
 import { createFrontendModule } from '@backstage/frontend-plugin-api';
 import { convertLegacyEntityContentExtension } from '@backstage/plugin-catalog-react/alpha';
 import { Entity } from '@backstage/catalog-model';
-import {
-  EntityGithubActionsContent,
-  isGithubActionsAvailable,
-} from '@backstage/plugin-github-actions';
+import { isGithubActionsAvailable } from '@backstage/plugin-github-actions';
+import { GithubActionsMessageClamp } from './GithubActionsMessageClamp';
 import {
   EntityGithubPullRequestsContent,
   isGithubPullRequestsAvailable,
@@ -19,7 +17,7 @@ const isComponentWithGithubSlug =
     entity.kind === 'Component' && isAvailable(entity);
 
 const githubActionsContent = convertLegacyEntityContentExtension(
-  EntityGithubActionsContent,
+  GithubActionsMessageClamp,
   {
     name: 'github-actions',
     path: '/ci-cd',
