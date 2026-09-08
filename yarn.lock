@@ -13932,6 +13932,7 @@ __metadata:
     "@backstage/plugin-catalog-backend-module-logs": "npm:^0.1.25"
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "npm:^0.2.23"
     "@backstage/plugin-catalog-common": "npm:^1.1.10"
+    "@backstage/plugin-catalog-node": "npm:^2.2.4"
     "@backstage/plugin-kubernetes-backend": "npm:^0.21.7"
     "@backstage/plugin-kubernetes-node": "npm:^0.4.7"
     "@backstage/plugin-mcp-actions-backend": "npm:^0.2.1"
@@ -13960,6 +13961,7 @@ __metadata:
     mongodb: "npm:^7.0.0"
     node-gyp: "npm:^10.0.0"
     pg: "npm:^8.11.3"
+    yaml: "npm:^2.9.0"
   languageName: unknown
   linkType: soft
 
@@ -32292,7 +32294,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.0.0, yaml@npm:^2.2.1":
+"yaml@npm:^2.0.0, yaml@npm:^2.2.1, yaml@npm:^2.9.0":
   version: 2.9.0
   resolution: "yaml@npm:2.9.0"
   bin:

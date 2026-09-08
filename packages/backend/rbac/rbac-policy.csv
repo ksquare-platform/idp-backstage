@@ -47,6 +47,16 @@ p, role:default/platform-admins, catalog.user.onboard, create, allow
 # deliberately NOT granted to role:default/developers (implicit deny), gating
 # "Onboard an existing repository" to platform-admins only.
 p, role:default/platform-admins, catalog.repo.onboard, create, allow
+# Custom per-environment permissions checked directly inside the
+# github:workflow:dispatch scaffolder action's handler (see
+# packages/backend/src/deploy/permissions.ts). uat/production are
+# deliberately NOT granted to role:default/developers (implicit deny) -
+# only platform-admins can trigger those deploys.
+p, role:default/platform-admins, deploy.trigger.integration, create, allow
+p, role:default/platform-admins, deploy.trigger.qa, create, allow
+p, role:default/platform-admins, deploy.trigger.staging, create, allow
+p, role:default/platform-admins, deploy.trigger.uat, create, allow
+p, role:default/platform-admins, deploy.trigger.production, create, allow
 
 g, group:default/platform-admins, role:default/platform-admins
 
@@ -62,5 +72,8 @@ p, role:default/developers, scaffolder-action, use, allow
 p, role:default/developers, scaffolder.task.create, create, allow
 p, role:default/developers, scaffolder-task, read, allow
 p, role:default/developers, scaffolder-task, use, allow
+p, role:default/developers, deploy.trigger.integration, create, allow
+p, role:default/developers, deploy.trigger.qa, create, allow
+p, role:default/developers, deploy.trigger.staging, create, allow
 
 g, group:default/developers, role:default/developers

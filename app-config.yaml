@@ -208,6 +208,14 @@ catalog:
       rules:
         - allow: [Template]
 
+    # "Deploy a service" template, runs the github:workflow:dispatch
+    # scaffolder action (per-environment permissions - see
+    # rbac/rbac-policy.csv)
+    - type: file
+      target: ../../examples/templates/deploy-service/template.yaml
+      rules:
+        - allow: [Template]
+
     ## Uncomment these lines to add more example data
     # - type: url
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml

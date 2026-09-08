@@ -12,6 +12,7 @@ import { kubernetesDeployActionModule } from './kubernetes/deployActionModule';
 import { githubRepoAccessActionsModule } from './github/repoAccessActionsModule';
 import { catalogUserOnboardActionModule } from './catalog/onboardUserActionModule';
 import { catalogRepoOnboardActionModule } from './catalog/onboardRepoActionModule';
+import { deployDispatchWorkflowActionModule } from './deploy/dispatchWorkflowActionModule';
 
 const backend = createBackend();
 
@@ -33,6 +34,8 @@ backend.add(githubRepoAccessActionsModule);
 backend.add(catalogUserOnboardActionModule);
 // Custom catalog:repo:onboard action: see ./catalog/onboardRepoAction.ts
 backend.add(catalogRepoOnboardActionModule);
+// Custom github:workflow:dispatch action: see ./deploy/dispatchWorkflowAction.ts
+backend.add(deployDispatchWorkflowActionModule);
 
 // techdocs plugin
 backend.add(import('@backstage/plugin-techdocs-backend'));

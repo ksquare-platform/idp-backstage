@@ -1,0 +1,96 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
+kind: Template
+metadata:
+  name: deploy-service
+  title: Deploy a service
+  description: >-
+    Triggers a component's own GitHub Actions deploy workflow for a chosen
+    environment. Backstage doesn't deploy anything itself - it only
+    dispatches the workflow that does, using the branch/workflow mapping in
+    the component's ksquare.io/deploy-environments annotation. Who can
+    deploy to which environment is governed by the github:workflow:dispatch
+    step - see rbac/rbac-policy.csv.
+spec:
+  owner: group:default/platform-admins
+  type: service
+
+  parameters:
+    - title: What to deploy
+      required:
+        - component
+      properties:
+        component:
+          title: Component
+          type: string
+          description: The catalog component to deploy
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind: Component
+          ui:autofocus: true
+
+    - title: Where to deploy it
+      required:
+        - environment
+      properties:
+        environment:
+          title: Environment
+          type: string
+          description: >-
+            Target environment - only the environments this component's
+            ksquare.io/deploy-environments annotation actually maps are
+            offered.
+          ui:field: DeployEnvironmentPicker
+        fullSource:
+          title: Full source deploy
+          type: boolean
+          description: >-
+            Deploy the full source rather than an incremental change set.
+            Only applies to the integration and qa environments - ignored
+            (and not sent) otherwise.
+          default: false
+        testLevel:
+          title: Test level
+          type: string
+          description: >-
+            Which tests to run as part of the deploy. Only applies to the
+            integration and qa environments - ignored (and not sent)
+            otherwise.
+          enum:
+            - RunLocalTests
+            - NoTestRun
+            - RunAllTestsInOrg
+          enumNames:
+            - 'Run local tests'
+            - 'No test run'
+            - 'Run all tests in org'
+          default: RunLocalTests
+
+  steps:
+    - id: dispatch
+      name: Dispatch deploy workflow
+      action: github:workflow:dispatch
+      input:
+        entityRef: ${{ parameters.component }}
+        environment: ${{ parameters.environment }}
+        fullSource: ${{ parameters.fullSource }}
+        testLevel: ${{ parameters.testLevel }}
+
+  output:
+    links:
+      - title: View workflow run
+        url: ${{ steps['dispatch'].output.runUrl }}
+    text:
+      - title: Deploy triggered
+        if: ${{ steps['dispatch'].output.found }}
+        content: |
+          Deploy of **${{ parameters.component }}** to
+          **${{ parameters.environment }}** has been triggered.
+      - title: Deploy triggered
+        if: ${{ not steps['dispatch'].output.found }}
+        content: |
+          Deploy of **${{ parameters.component }}** to
+          **${{ parameters.environment }}** was dispatched, but its run
+          wasn't visible yet - check the workflow's runs list above in a
+          moment.

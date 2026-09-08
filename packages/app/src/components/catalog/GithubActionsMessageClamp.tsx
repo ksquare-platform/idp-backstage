@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { attachComponentData, getComponentData } from '@backstage/core-plugin-api';
 import { EntityGithubActionsContent } from '@backstage/plugin-github-actions';
+import { DeployCard } from './DeployCard';
 
 // The GitHub Actions tab's workflow-runs table renders the full,
 // potentially multi-paragraph commit message directly into a table cell
@@ -79,9 +80,12 @@ function GithubActionsMessageClamp() {
   }, []);
 
   return (
-    <div className={GITHUB_ACTIONS_MESSAGE_CLAMP_CLASS} ref={containerRef}>
-      <EntityGithubActionsContent />
-    </div>
+    <>
+      <DeployCard />
+      <div className={GITHUB_ACTIONS_MESSAGE_CLAMP_CLASS} ref={containerRef}>
+        <EntityGithubActionsContent />
+      </div>
+    </>
   );
 }
 

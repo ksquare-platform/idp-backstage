@@ -10,6 +10,7 @@ import { homeModule } from './modules/home';
 import { githubEntityPageModule } from './components/catalog/EntityPage';
 import { githubActionsApiModule } from './apis';
 import { themeModule } from './theme/ThemeModule';
+import { deployEnvironmentPickerModule } from './scaffolder/DeployEnvironmentPickerModule';
 
 const signInPageModule = createFrontendModule({
   pluginId: 'app',
@@ -44,5 +45,6 @@ export default createApp({
     githubEntityPageModule,
     githubActionsApiModule,
     themeModule,
+    deployEnvironmentPickerModule,
   ],
 });

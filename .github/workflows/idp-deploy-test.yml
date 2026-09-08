@@ -1,0 +1,13 @@
+name: IDP deploy test
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: Anything you like
+        type: string
+        default: hello
+jobs:
+  say:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Dispatched from Ksquare IDP - ${{ inputs.message }}"
