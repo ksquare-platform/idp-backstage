@@ -94,12 +94,12 @@ catalog:
         - allow: [User, Group]
 
     - type: url
-      target: https://github.com/Rupessh-Metra/idp-backstage/blob/main/catalog/users.yaml
+      target: https://github.com/ksquare-platform/idp-backstage/blob/main/catalog/users.yaml
       rules:
         - allow: [User, Group]
 
     - type: url
-      target: https://github.com/Rupessh-Metra/idp-backstage/blob/main/catalog-info.yaml
+      target: https://github.com/ksquare-platform/idp-backstage/blob/main/catalog-info.yaml
     - type: url
       target: https://github.com/Rupessh-Metra/JavaWebCalculator/blob/master/catalog-info.yaml
 

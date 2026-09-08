@@ -51,7 +51,7 @@ spec:
       name: Open pull request
       action: publish:github:pull-request
       input:
-        repoUrl: github.com?repo=idp-backstage&owner=Rupessh-Metra
+        repoUrl: github.com?repo=idp-backstage&owner=ksquare-platform
         branchName: onboard-${{ parameters.github_username }}
         title: Onboard ${{ parameters.github_username }}
         description: >-

@@ -60,3 +60,4 @@ e2e-test-report/
 
 # Persistent local backend database (better-sqlite3)
 .data/
+github-app-*-credentials.yaml

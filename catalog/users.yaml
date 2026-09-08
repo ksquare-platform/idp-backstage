@@ -37,3 +37,13 @@ metadata:
   name: suprajagoli9-a11y
 spec:
   memberOf: [developers]
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: g-m-rupessh-metra
+spec:
+  profile:
+    displayName: Rupessh Metra
+    email: rupessh.metra@theksquaregroup.com
+  memberOf: [developers, platform-admins]

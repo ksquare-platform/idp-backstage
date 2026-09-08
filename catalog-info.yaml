@@ -4,7 +4,7 @@ metadata:
   name: idp
   description: An example of a Backstage application.
   annotations:
-    github.com/project-slug: Rupessh-Metra/idp-backstage
+    github.com/project-slug: ksquare-platform/idp-backstage
     backstage.io/techdocs-ref: dir:.
 spec:
   type: website

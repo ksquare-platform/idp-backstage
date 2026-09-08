@@ -8,7 +8,7 @@ import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { createOctokitForRepo } from '../github/octokit';
 import { catalogUserOnboardPermission } from './permissions';
 
-const USERS_FILE_REPO = 'Rupessh-Metra/idp-backstage';
+const USERS_FILE_REPO = 'ksquare-platform/idp-backstage';
 const USERS_FILE_PATH = 'catalog/users.yaml';
 
 export function createCatalogUserOnboardAction(
