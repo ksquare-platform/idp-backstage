@@ -200,6 +200,14 @@ catalog:
       rules:
         - allow: [Template]
 
+    # "Onboard an existing repository" template, runs the
+    # catalog:repo:onboard scaffolder action (platform-admins only - see
+    # rbac/rbac-policy.csv)
+    - type: file
+      target: ../../examples/templates/onboard-repo/template.yaml
+      rules:
+        - allow: [Template]
+
     ## Uncomment these lines to add more example data
     # - type: url
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml

@@ -11,6 +11,7 @@ import { kubeconfigClusterSupplierModule } from './kubernetes/kubeconfigClusterS
 import { kubernetesDeployActionModule } from './kubernetes/deployActionModule';
 import { githubRepoAccessActionsModule } from './github/repoAccessActionsModule';
 import { catalogUserOnboardActionModule } from './catalog/onboardUserActionModule';
+import { catalogRepoOnboardActionModule } from './catalog/onboardRepoActionModule';
 
 const backend = createBackend();
 
@@ -30,6 +31,8 @@ backend.add(kubernetesDeployActionModule);
 backend.add(githubRepoAccessActionsModule);
 // Custom catalog:user:onboard action: see ./catalog/onboardUserAction.ts
 backend.add(catalogUserOnboardActionModule);
+// Custom catalog:repo:onboard action: see ./catalog/onboardRepoAction.ts
+backend.add(catalogRepoOnboardActionModule);
 
 // techdocs plugin
 backend.add(import('@backstage/plugin-techdocs-backend'));

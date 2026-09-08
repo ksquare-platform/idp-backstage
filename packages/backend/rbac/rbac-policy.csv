@@ -42,6 +42,11 @@ p, role:default/platform-admins, kubernetes.resources.read, read, allow
 # role:default/developers (implicit deny), gating "Onboard teammate" to
 # platform-admins only.
 p, role:default/platform-admins, catalog.user.onboard, create, allow
+# Custom permission checked directly inside the catalog:repo:onboard
+# scaffolder action's handler (see packages/backend/src/catalog/permissions.ts) -
+# deliberately NOT granted to role:default/developers (implicit deny), gating
+# "Onboard an existing repository" to platform-admins only.
+p, role:default/platform-admins, catalog.repo.onboard, create, allow
 
 g, group:default/platform-admins, role:default/platform-admins
 

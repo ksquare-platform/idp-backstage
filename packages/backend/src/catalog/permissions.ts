@@ -9,3 +9,10 @@ export const catalogUserOnboardPermission = createPermission({
   name: 'catalog.user.onboard',
   attributes: { action: 'create' },
 });
+
+// Same rationale as catalogUserOnboardPermission above - gates the
+// catalog:repo:onboard scaffolder action (see rbac/rbac-policy.csv).
+export const catalogRepoOnboardPermission = createPermission({
+  name: 'catalog.repo.onboard',
+  attributes: { action: 'create' },
+});

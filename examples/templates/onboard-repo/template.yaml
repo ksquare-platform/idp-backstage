@@ -1,0 +1,128 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
+kind: Template
+metadata:
+  name: onboard-repo
+  title: Onboard an existing repository
+  description: >-
+    Onboards an existing GitHub repository into the catalog. If the repo
+    already has a catalog-info.yaml on its default branch, it's registered
+    immediately; otherwise a pull request is opened adding one. Restricted
+    to platform-admins - see the catalog:repo:onboard step and
+    rbac/rbac-policy.csv.
+spec:
+  owner: group:default/platform-admins
+  type: service
+
+  parameters:
+    - title: Repository
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository URL
+          type: string
+          description: >-
+            URL of the existing GitHub repository, e.g.
+            https://github.com/OWNER/REPO
+          pattern: '^https://github\.com/[^/]+/[^/]+$'
+          ui:autofocus: true
+
+    - title: Catalog metadata
+      required:
+        - name
+        - type
+        - lifecycle
+        - owner
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Unique name of the component in the catalog
+          ui:field: EntityNamePicker
+        title:
+          title: Title
+          type: string
+          description: Optional human-readable title
+        description:
+          title: Description
+          type: string
+          description: Optional description of the component
+        type:
+          title: Type
+          type: string
+          description: Type of component
+          default: service
+          enum:
+            - service
+            - website
+            - library
+            - salesforce-app
+            - mulesoft-api
+        lifecycle:
+          title: Lifecycle
+          type: string
+          description: Lifecycle stage of the component
+          default: experimental
+          enum:
+            - experimental
+            - production
+            - deprecated
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+        tags:
+          title: Tags
+          type: array
+          items:
+            type: string
+          ui:field: EntityTagsPicker
+
+  steps:
+    - id: onboard
+      name: Onboard repository
+      action: catalog:repo:onboard
+      input:
+        repoUrl: ${{ parameters.repoUrl }}
+        name: ${{ parameters.name }}
+        title: ${{ parameters.title }}
+        description: ${{ parameters.description }}
+        type: ${{ parameters.type }}
+        lifecycle: ${{ parameters.lifecycle }}
+        owner: ${{ parameters.owner }}
+        tags: ${{ parameters.tags }}
+
+    - id: register
+      name: Register in the catalog
+      action: catalog:register
+      if: ${{ steps['onboard'].output.exists }}
+      input:
+        catalogInfoUrl: ${{ steps['onboard'].output.catalogInfoUrl }}
+
+  output:
+    links:
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}
+        if: ${{ steps['onboard'].output.exists }}
+      - title: View pull request
+        url: ${{ steps['onboard'].output.prUrl }}
+        if: ${{ not steps['onboard'].output.exists }}
+    text:
+      - title: Registered
+        if: ${{ steps['onboard'].output.exists }}
+        content: |
+          `catalog-info.yaml` already existed on the repository's default
+          branch, so **${{ parameters.name }}** has been registered in the
+          catalog immediately.
+      - title: Pull request opened
+        if: ${{ not steps['onboard'].output.exists }}
+        content: |
+          No `catalog-info.yaml` was found, so a pull request was opened
+          adding one. **${{ parameters.name }}** will show up in the catalog
+          once the pull request is reviewed and merged.
