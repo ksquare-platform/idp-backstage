@@ -158,22 +158,6 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location]
   locations:
-    # Local example data, file locations are relative to the backend process, typically `packages/backend`
-    - type: file
-      target: ../../examples/entities.yaml
-
-    # Local example template
-    - type: file
-      target: ../../examples/template/template.yaml
-      rules:
-        - allow: [Template]
-
-    # Local example organizational data
-    - type: file
-      target: ../../examples/org.yaml
-      rules:
-        - allow: [User, Group]
-
     # GitHub sign-in user/group data. Single source of truth for login-able
     # users - the baked-in examples/github-org.yaml has been removed. New
     # users are appended here via a pull request by the "Onboard teammate"
@@ -187,14 +171,6 @@ catalog:
     # don't need to be re-added via the "Analyze" / Register Existing flow.
     - type: url
       target: https://github.com/ksquare-platform/idp-backstage/blob/main/catalog-info.yaml
-    - type: url
-      target: https://github.com/Rupessh-Metra/JavaWebCalculator/blob/master/catalog-info.yaml
-
-    # "Deploy to kind" template, runs the kubernetes:deploy scaffolder action
-    - type: file
-      target: ../../examples/templates/deploy-to-kind/template.yaml
-      rules:
-        - allow: [Template]
 
     # "Grant repo access" template, runs the github:repo:grant scaffolder action
     - type: file
@@ -251,15 +227,10 @@ kubernetes:
   # (see packages/backend/src/kubernetes) that reads a kubeconfig file. Its
   # path is set via kubernetes.kubeconfigPath in app-config.local.yaml (or
   # the KUBECONFIG env var), since it's a local, machine-specific path.
-  #
-  # The kubernetes:deploy scaffolder action (see
-  # packages/backend/src/kubernetes/deployAction.ts) also expects, in
-  # app-config.local.yaml since it's a credential:
-  #   kubernetes:
-  #     dockerHub:
-  #       username: <docker hub username>
-  #       token: <docker hub access token>
-  #       imagePullSecret: <name of the imagePullSecret in the cluster>
+  # This is read-only cluster visibility (the Kubernetes tab) - the
+  # kubernetes:deploy scaffolder action that used to write to these
+  # clusters has been removed in favor of the dispatch-based
+  # "Deploy a service" template.
 
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:

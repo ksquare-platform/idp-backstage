@@ -8,7 +8,6 @@
 
 import { createBackend } from '@backstage/backend-defaults';
 import { kubeconfigClusterSupplierModule } from './kubernetes/kubeconfigClusterSupplierModule';
-import { kubernetesDeployActionModule } from './kubernetes/deployActionModule';
 import { githubRepoAccessActionsModule } from './github/repoAccessActionsModule';
 import { catalogUserOnboardActionModule } from './catalog/onboardUserActionModule';
 import { catalogRepoOnboardActionModule } from './catalog/onboardRepoActionModule';
@@ -27,8 +26,6 @@ backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
 backend.add(
   import('@backstage/plugin-scaffolder-backend-module-notifications'),
 );
-// Custom kubernetes:deploy action: see ./kubernetes/deployAction.ts
-backend.add(kubernetesDeployActionModule);
 // Custom github:repo:grant / github:repo:revoke actions:
 // see ./github/repoAccessActions.ts
 backend.add(githubRepoAccessActionsModule);

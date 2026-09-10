@@ -50,6 +50,17 @@ auth:
 # needs the Docker CLI + a mounted /var/run/docker.sock in this container to
 # actually work - see the note in deploy/docker-compose.yml.
 
+# Config for the custom idp-onboarding backend plugin - technically already
+# inherited from app-config.yaml since production doesn't touch the `idp`
+# key at all, but kept explicit here for parity with catalog.locations
+# below, which genuinely does need re-declaring.
+idp:
+  onboarding:
+    organizations:
+      - ksquare-platform
+      - NIS-Guyana
+      - TKSQ-Guyana
+
 kubernetes:
   # Paths are read from inside the container - mount the real files at
   # these exact paths (see deploy/docker-compose.yml).
@@ -77,22 +88,9 @@ catalog:
   # here without the `../../`. Config arrays replace rather than merge, so
   # the whole list - including the unchanged `url` entries - is repeated.
   # Without this, the GitHub sign-in resolver has no User/Group entities to
-  # match against (github-org.yaml) and the deploy-to-kind /
-  # grant-repo-access templates never get registered.
+  # match against (catalog/users.yaml) and the templates below never get
+  # registered.
   locations:
-    - type: file
-      target: ./examples/entities.yaml
-
-    - type: file
-      target: ./examples/template/template.yaml
-      rules:
-        - allow: [Template]
-
-    - type: file
-      target: ./examples/org.yaml
-      rules:
-        - allow: [User, Group]
-
     - type: url
       target: https://github.com/ksquare-platform/idp-backstage/blob/main/catalog/users.yaml
       rules:
@@ -100,13 +98,6 @@ catalog:
 
     - type: url
       target: https://github.com/ksquare-platform/idp-backstage/blob/main/catalog-info.yaml
-    - type: url
-      target: https://github.com/Rupessh-Metra/JavaWebCalculator/blob/master/catalog-info.yaml
-
-    - type: file
-      target: ./examples/templates/deploy-to-kind/template.yaml
-      rules:
-        - allow: [Template]
 
     - type: file
       target: ./examples/templates/grant-repo-access/template.yaml
@@ -115,5 +106,20 @@ catalog:
 
     - type: file
       target: ./examples/templates/onboard-user/template.yaml
+      rules:
+        - allow: [Template]
+
+    - type: file
+      target: ./examples/templates/onboard-repo/template.yaml
+      rules:
+        - allow: [Template]
+
+    - type: file
+      target: ./examples/templates/deploy-service/template.yaml
+      rules:
+        - allow: [Template]
+
+    - type: file
+      target: ./examples/templates/new-service/template.yaml
       rules:
         - allow: [Template]

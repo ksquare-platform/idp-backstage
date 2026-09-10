@@ -37,17 +37,32 @@ function isRequestError(e: unknown): e is { status: number; message: string } {
   return typeof e === 'object' && e !== null && 'status' in e;
 }
 
+// `operation` describes what was being attempted, e.g. "read repository
+// metadata" or "create branch 'x'" - it's folded into the error message so
+// a 404 from a missing repo/branch/file reads nothing like a permissions
+// problem, and a real permissions problem (403) reads nothing like a
+// missing resource.
+function throwAccessError(repo: string, operation: string, status: number): never {
+  if (status === 403) {
+    throw new InputError(
+      `The GitHub integration credentials lack permission to ${operation} on '${repo}'`,
+    );
+  }
+  throw new InputError(
+    `${operation} on '${repo}' returned 404 - the resource may not exist, or the credentials cannot see it`,
+  );
+}
+
 async function withAccessCheck<T>(
   repo: string,
+  operation: string,
   fn: () => Promise<T>,
 ): Promise<T> {
   try {
     return await fn();
   } catch (e) {
     if (isRequestError(e) && (e.status === 403 || e.status === 404)) {
-      throw new InputError(
-        `The GitHub integration credentials don't have access to '${repo}' (HTTP ${e.status})`,
-      );
+      throwAccessError(repo, operation, e.status);
     }
     throw e;
   }
@@ -176,8 +191,10 @@ export function createCatalogRepoOnboardAction(
       const repoSlug = `${repoOwner}/${repo}`;
       const octokit = await createOctokitForRepo(config, repoSlug);
 
-      const { data: repoData } = await withAccessCheck(repoSlug, () =>
-        octokit.rest.repos.get({ owner: repoOwner, repo }),
+      const { data: repoData } = await withAccessCheck(
+        repoSlug,
+        'read repository metadata',
+        () => octokit.rest.repos.get({ owner: repoOwner, repo }),
       );
       const defaultBranch = repoData.default_branch;
 
@@ -195,9 +212,7 @@ export function createCatalogRepoOnboardAction(
         if (isRequestError(e) && e.status === 404) {
           catalogInfoExists = false;
         } else if (isRequestError(e) && e.status === 403) {
-          throw new InputError(
-            `The GitHub integration credentials don't have access to '${repoSlug}' (HTTP ${e.status})`,
-          );
+          throwAccessError(repoSlug, `read '${CATALOG_INFO_PATH}' at '${defaultBranch}'`, 403);
         } else {
           throw e;
         }
@@ -224,12 +239,15 @@ export function createCatalogRepoOnboardAction(
         sourceLocation: `url:https://github.com/${repoSlug}/tree/${defaultBranch}/`,
       });
 
-      const { data: baseRef } = await withAccessCheck(repoSlug, () =>
-        octokit.rest.git.getRef({
-          owner: repoOwner,
-          repo,
-          ref: `heads/${defaultBranch}`,
-        }),
+      const { data: baseRef } = await withAccessCheck(
+        repoSlug,
+        `read ref 'heads/${defaultBranch}'`,
+        () =>
+          octokit.rest.git.getRef({
+            owner: repoOwner,
+            repo,
+            ref: `heads/${defaultBranch}`,
+          }),
       );
 
       try {
@@ -243,9 +261,7 @@ export function createCatalogRepoOnboardAction(
         if (isRequestError(e) && e.status === 422) {
           // Branch already exists from a previous run - reuse it.
         } else if (isRequestError(e) && (e.status === 403 || e.status === 404)) {
-          throw new InputError(
-            `The GitHub integration credentials don't have access to '${repoSlug}' (HTTP ${e.status})`,
-          );
+          throwAccessError(repoSlug, `create branch '${ONBOARD_BRANCH}'`, e.status);
         } else {
           throw e;
         }
@@ -263,21 +279,32 @@ export function createCatalogRepoOnboardAction(
           existingFileSha = existingFile.sha;
         }
       } catch (e) {
-        if (!(isRequestError(e) && e.status === 404)) {
+        if (isRequestError(e) && e.status === 404) {
+          // Not created on this branch yet - fine, it's created below.
+        } else if (isRequestError(e) && e.status === 403) {
+          throwAccessError(
+            repoSlug,
+            `read '${CATALOG_INFO_PATH}' on branch '${ONBOARD_BRANCH}'`,
+            403,
+          );
+        } else {
           throw e;
         }
       }
 
-      await withAccessCheck(repoSlug, () =>
-        octokit.rest.repos.createOrUpdateFileContents({
-          owner: repoOwner,
-          repo,
-          path: CATALOG_INFO_PATH,
-          message: `Add ${CATALOG_INFO_PATH} for ${name}`,
-          content: Buffer.from(content, 'utf-8').toString('base64'),
-          branch: ONBOARD_BRANCH,
-          sha: existingFileSha,
-        }),
+      await withAccessCheck(
+        repoSlug,
+        `write '${CATALOG_INFO_PATH}' on branch '${ONBOARD_BRANCH}'`,
+        () =>
+          octokit.rest.repos.createOrUpdateFileContents({
+            owner: repoOwner,
+            repo,
+            path: CATALOG_INFO_PATH,
+            message: `Add ${CATALOG_INFO_PATH} for ${name}`,
+            content: Buffer.from(content, 'utf-8').toString('base64'),
+            branch: ONBOARD_BRANCH,
+            sha: existingFileSha,
+          }),
       );
 
       let prUrl: string;
@@ -307,8 +334,10 @@ export function createCatalogRepoOnboardAction(
           prUrl = existingPrs[0].html_url;
           prNumber = existingPrs[0].number;
         } else if (isRequestError(e) && (e.status === 403 || e.status === 404)) {
-          throw new InputError(
-            `The GitHub integration credentials don't have access to '${repoSlug}' (HTTP ${e.status})`,
+          throwAccessError(
+            repoSlug,
+            `create pull request for '${ONBOARD_BRANCH}' into '${defaultBranch}'`,
+            e.status,
           );
         } else {
           throw e;

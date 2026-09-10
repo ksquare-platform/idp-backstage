@@ -41,6 +41,10 @@ export const SidebarContent = NavContentBlueprint.make({
       // Skipped items
       nav.take('page:search'); // Using search modal instead
       nav.take('page:notifications'); // Using NotificationsSidebarItem manually instead
+      // "Register Existing Component" 404s on client orgs and is replaced
+      // by the "Onboard an existing repository" template - hide it rather
+      // than let it fall through into nav.rest() below.
+      nav.take('page:catalog-import');
       const rbacNavItem = nav.take('page:rbac');
 
       return (
