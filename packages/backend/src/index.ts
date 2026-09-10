@@ -13,6 +13,7 @@ import { githubRepoAccessActionsModule } from './github/repoAccessActionsModule'
 import { catalogUserOnboardActionModule } from './catalog/onboardUserActionModule';
 import { catalogRepoOnboardActionModule } from './catalog/onboardRepoActionModule';
 import { deployDispatchWorkflowActionModule } from './deploy/dispatchWorkflowActionModule';
+import { idpOnboardingPlugin } from './onboarding/plugin';
 
 const backend = createBackend();
 
@@ -36,6 +37,8 @@ backend.add(catalogUserOnboardActionModule);
 backend.add(catalogRepoOnboardActionModule);
 // Custom github:workflow:dispatch action: see ./deploy/dispatchWorkflowAction.ts
 backend.add(deployDispatchWorkflowActionModule);
+// Repo browsing/onboarding REST API: see ./onboarding/plugin.ts
+backend.add(idpOnboardingPlugin);
 
 // techdocs plugin
 backend.add(import('@backstage/plugin-techdocs-backend'));

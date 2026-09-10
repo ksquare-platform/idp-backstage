@@ -142,6 +142,16 @@ auth:
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
 
+# Config for the custom idp-onboarding backend plugin (see
+# packages/backend/src/onboarding) - which orgs the "Repositories" page can
+# browse and onboard repos from.
+idp:
+  onboarding:
+    organizations:
+      - ksquare-platform
+      - NIS-Guyana
+      - TKSQ-Guyana
+
 catalog:
   import:
     entityFilename: catalog-info.yaml
@@ -265,6 +275,7 @@ permission:
       - scaffolder
       - permission
       - kubernetes
+      - idp-onboarding
     # Casbin/CSV has no "every user" wildcard subject, so the third tier
     # from our previous custom policy ("any other authenticated user ->
     # read-only") is expressed here instead: every authenticated user gets

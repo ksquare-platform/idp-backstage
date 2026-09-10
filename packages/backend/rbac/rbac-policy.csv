@@ -57,6 +57,10 @@ p, role:default/platform-admins, deploy.trigger.qa, create, allow
 p, role:default/platform-admins, deploy.trigger.staging, create, allow
 p, role:default/platform-admins, deploy.trigger.uat, create, allow
 p, role:default/platform-admins, deploy.trigger.production, create, allow
+# Custom permission checked directly inside the idp-onboarding plugin's
+# router (see packages/backend/src/onboarding/permissions.ts) - gates
+# browsing/onboarding repositories via the "Repositories" page.
+p, role:default/platform-admins, idp.onboarding.read, read, allow
 
 g, group:default/platform-admins, role:default/platform-admins
 
@@ -75,5 +79,6 @@ p, role:default/developers, scaffolder-task, use, allow
 p, role:default/developers, deploy.trigger.integration, create, allow
 p, role:default/developers, deploy.trigger.qa, create, allow
 p, role:default/developers, deploy.trigger.staging, create, allow
+p, role:default/developers, idp.onboarding.read, read, allow
 
 g, group:default/developers, role:default/developers

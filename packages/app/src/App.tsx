@@ -11,6 +11,7 @@ import { githubEntityPageModule } from './components/catalog/EntityPage';
 import { githubActionsApiModule } from './apis';
 import { themeModule } from './theme/ThemeModule';
 import { deployEnvironmentPickerModule } from './scaffolder/DeployEnvironmentPickerModule';
+import { repositoriesPlugin } from './onboarding/RepositoriesPageModule';
 
 const signInPageModule = createFrontendModule({
   pluginId: 'app',
@@ -46,5 +47,6 @@ export default createApp({
     githubActionsApiModule,
     themeModule,
     deployEnvironmentPickerModule,
+    repositoriesPlugin,
   ],
 });
