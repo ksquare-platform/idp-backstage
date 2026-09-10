@@ -14,6 +14,7 @@ import { catalogRepoOnboardActionModule } from './catalog/onboardRepoActionModul
 import { catalogServiceCreateAuthorizeActionModule } from './catalog/serviceCreateAuthorizeActionModule';
 import { deployDispatchWorkflowActionModule } from './deploy/dispatchWorkflowActionModule';
 import { idpOnboardingPlugin } from './onboarding/plugin';
+import { idpStandardsPlugin } from './standards/plugin';
 
 const backend = createBackend();
 
@@ -40,6 +41,8 @@ backend.add(catalogServiceCreateAuthorizeActionModule);
 backend.add(deployDispatchWorkflowActionModule);
 // Repo browsing/onboarding REST API: see ./onboarding/plugin.ts
 backend.add(idpOnboardingPlugin);
+// Service standards scorecards REST API: see ./standards/plugin.ts
+backend.add(idpStandardsPlugin);
 
 // techdocs plugin
 backend.add(import('@backstage/plugin-techdocs-backend'));

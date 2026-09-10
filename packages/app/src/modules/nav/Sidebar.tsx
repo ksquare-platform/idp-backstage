@@ -58,6 +58,7 @@ export const SidebarContent = NavContentBlueprint.make({
             {nav.take('page:home')}
             {nav.take('page:catalog')}
             {nav.take('page:idp-onboarding')}
+            {nav.take('page:idp-standards')}
             {nav.take('page:scaffolder')}
             <SidebarDivider />
             <SidebarScrollWrapper>

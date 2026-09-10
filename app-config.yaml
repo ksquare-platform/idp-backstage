@@ -254,6 +254,7 @@ permission:
       - permission
       - kubernetes
       - idp-onboarding
+      - idp-standards
     # Casbin/CSV has no "every user" wildcard subject, so the third tier
     # from our previous custom policy ("any other authenticated user ->
     # read-only") is expressed here instead: every authenticated user gets

@@ -12,6 +12,8 @@ import { githubActionsApiModule } from './apis';
 import { themeModule } from './theme/ThemeModule';
 import { deployEnvironmentPickerModule } from './scaffolder/DeployEnvironmentPickerModule';
 import { repositoriesPlugin } from './onboarding/RepositoriesPageModule';
+import { standardsCardModule } from './standards/StandardsCardModule';
+import { standardsPlugin } from './standards/StandardsPageModule';
 
 const signInPageModule = createFrontendModule({
   pluginId: 'app',
@@ -48,5 +50,7 @@ export default createApp({
     themeModule,
     deployEnvironmentPickerModule,
     repositoriesPlugin,
+    standardsCardModule,
+    standardsPlugin,
   ],
 });
