@@ -226,6 +226,14 @@ catalog:
       rules:
         - allow: [Template]
 
+    # "Create a new service" golden path template, runs the
+    # catalog:service:create scaffolder action (platform-admins only - see
+    # rbac/rbac-policy.csv)
+    - type: file
+      target: ../../examples/templates/new-service/template.yaml
+      rules:
+        - allow: [Template]
+
     ## Uncomment these lines to add more example data
     # - type: url
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml

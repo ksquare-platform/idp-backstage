@@ -47,6 +47,12 @@ p, role:default/platform-admins, catalog.user.onboard, create, allow
 # deliberately NOT granted to role:default/developers (implicit deny), gating
 # "Onboard an existing repository" to platform-admins only.
 p, role:default/platform-admins, catalog.repo.onboard, create, allow
+# Custom permission checked directly inside the catalog:service:create
+# scaffolder action's handler (see packages/backend/src/catalog/permissions.ts) -
+# deliberately NOT granted to role:default/developers (implicit deny), gating
+# "Create a new service" (which creates a real repo under ksquare-platform)
+# to platform-admins only.
+p, role:default/platform-admins, catalog.service.create, create, allow
 # Custom per-environment permissions checked directly inside the
 # github:workflow:dispatch scaffolder action's handler (see
 # packages/backend/src/deploy/permissions.ts). uat/production are

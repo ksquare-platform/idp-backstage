@@ -12,6 +12,7 @@ import { kubernetesDeployActionModule } from './kubernetes/deployActionModule';
 import { githubRepoAccessActionsModule } from './github/repoAccessActionsModule';
 import { catalogUserOnboardActionModule } from './catalog/onboardUserActionModule';
 import { catalogRepoOnboardActionModule } from './catalog/onboardRepoActionModule';
+import { catalogServiceCreateAuthorizeActionModule } from './catalog/serviceCreateAuthorizeActionModule';
 import { deployDispatchWorkflowActionModule } from './deploy/dispatchWorkflowActionModule';
 import { idpOnboardingPlugin } from './onboarding/plugin';
 
@@ -35,6 +36,9 @@ backend.add(githubRepoAccessActionsModule);
 backend.add(catalogUserOnboardActionModule);
 // Custom catalog:repo:onboard action: see ./catalog/onboardRepoAction.ts
 backend.add(catalogRepoOnboardActionModule);
+// Custom catalog:service:create permission gate: see
+// ./catalog/serviceCreateAuthorizeAction.ts
+backend.add(catalogServiceCreateAuthorizeActionModule);
 // Custom github:workflow:dispatch action: see ./deploy/dispatchWorkflowAction.ts
 backend.add(deployDispatchWorkflowActionModule);
 // Repo browsing/onboarding REST API: see ./onboarding/plugin.ts

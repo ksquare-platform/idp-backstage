@@ -16,3 +16,14 @@ export const catalogRepoOnboardPermission = createPermission({
   name: 'catalog.repo.onboard',
   attributes: { action: 'create' },
 });
+
+// Same rationale again - gates the catalog:service:create scaffolder
+// action (see rbac/rbac-policy.csv), which is a pure permission gate run
+// as the first step of the "Create a new service" template, in front of
+// the stock fetch:template/publish:github/catalog:register steps that
+// actually do the work (there's no custom action among those to embed the
+// check inside, unlike the two permissions above).
+export const catalogServiceCreatePermission = createPermission({
+  name: 'catalog.service.create',
+  attributes: { action: 'create' },
+});
