@@ -2,7 +2,8 @@ import { createFrontendModule } from '@backstage/frontend-plugin-api';
 import { HomePageWidgetBlueprint } from '@backstage/plugin-home-react/alpha';
 import { Hero } from './Hero';
 import { QuickActions } from './QuickActions';
-import { OwnedEntities, FeaturedTemplates } from './EntityLists';
+import { MyServices } from './MyServices';
+import { RecentActivity } from './RecentActivity';
 
 const heroWidget = HomePageWidgetBlueprint.make({
   name: 'hero',
@@ -19,28 +20,28 @@ const quickActionsWidget = HomePageWidgetBlueprint.make({
   params: {
     name: 'QuickActions',
     title: 'Quick actions',
-    description: 'The things you do most',
+    description: 'Start one of the golden paths',
     components: async () => ({ Content: QuickActions }),
   },
 });
 
-const ownedEntitiesWidget = HomePageWidgetBlueprint.make({
-  name: 'owned-entities',
+const myServicesWidget = HomePageWidgetBlueprint.make({
+  name: 'my-services',
   params: {
-    name: 'OwnedEntities',
-    title: 'Owned by you',
-    description: 'Components you or your groups own',
-    components: async () => ({ Content: OwnedEntities }),
+    name: 'MyServices',
+    title: 'My services',
+    description: 'Components owned by groups you belong to',
+    components: async () => ({ Content: MyServices }),
   },
 });
 
-const featuredTemplatesWidget = HomePageWidgetBlueprint.make({
-  name: 'featured-templates',
+const recentActivityWidget = HomePageWidgetBlueprint.make({
+  name: 'recent-activity',
   params: {
-    name: 'FeaturedTemplates',
-    title: 'Featured templates',
-    description: 'Scaffold a new service from one of these',
-    components: async () => ({ Content: FeaturedTemplates }),
+    name: 'RecentActivity',
+    title: 'Recent activity',
+    description: 'The most recent scaffolder template runs',
+    components: async () => ({ Content: RecentActivity }),
   },
 });
 
@@ -49,7 +50,7 @@ export const homeModule = createFrontendModule({
   extensions: [
     heroWidget,
     quickActionsWidget,
-    ownedEntitiesWidget,
-    featuredTemplatesWidget,
+    myServicesWidget,
+    recentActivityWidget,
   ],
 });

@@ -20,6 +20,11 @@ app:
     - page:home:
         config:
           path: /
+          # 12-column grid, 60px row height (see @backstage/plugin-home's
+          # CustomHomepageGrid). The search bar lives inside PortalHero
+          # itself (packages/app/src/modules/home/Hero.tsx) rather than as
+          # its own row - HomePageSearchBar is intentionally NOT listed
+          # here.
           defaultConfig:
             - component: PortalHero
               column: 0
@@ -27,32 +32,26 @@ app:
               width: 12
               height: 3
               deletable: false
-            - component: HomePageSearchBar
-              column: 0
-              row: 3
-              width: 12
-              height: 2
-              deletable: false
             - component: QuickActions
               column: 0
-              row: 5
-              width: 12
-              height: 4
-            - component: HomePageStarredEntities
-              column: 0
-              row: 9
-              width: 6
-              height: 6
-            - component: OwnedEntities
-              column: 6
-              row: 9
-              width: 6
-              height: 6
-            - component: FeaturedTemplates
-              column: 0
-              row: 15
-              width: 12
+              row: 3
+              width: 7
               height: 5
+            - component: MyServices
+              column: 7
+              row: 3
+              width: 5
+              height: 5
+            - component: RecentActivity
+              column: 0
+              row: 8
+              width: 7
+              height: 5
+          # Starred Entities and Recently Visited are deliberately NOT in
+          # the default layout - Starred is empty for most users and
+          # Recently Visited says visit tracking isn't enabled, so as
+          # defaults they're just empty boxes. Both widgets are still
+          # available - add them via the "Add widget" picker in Edit mode.
 
 organization:
   name: The Ksquare Group
